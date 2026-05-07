@@ -195,30 +195,96 @@ export function GameScreen({ onBack }: { onBack?: () => void }) {
   }
 
   return (
-    <div className="h-[calc(100vh-80px)] p-4 grid grid-rows-[1fr_auto] gap-4">
-      {/* Main Game Area */}
-      <div className="grid lg:grid-cols-[1fr_280px_1fr] gap-4 min-h-0">
-        <section className="glass relative overflow-hidden min-h-[300px]">
-          <div className="absolute top-3 left-3 z-10 font-display text-xs uppercase tracking-widest neon-cyan">Allied Fleet</div>
-          <GameBoard3D board={player} isEnemy={false} revealShips />
-        </section>
-
-        <section className="glass p-4 flex flex-col">
-          <h3 className="font-display uppercase tracking-widest text-xs neon-cyan mb-3">Comms Log</h3>
-          <ul className="text-xs space-y-1.5 font-mono overflow-y-auto flex-1">
-            {log.map((l, i) => (
-              <li key={i} className="text-muted-foreground" style={{ opacity: 1 - i * 0.1 }}>› {l}</li>
-            ))}
-          </ul>
-          <div className="mt-3 pt-3 border-t border-border text-xs text-muted-foreground">
-            <div>Enemy ships down: <span className="neon-enemy">{enemy.ships.filter((s) => s.hits >= s.size).length}/5</span></div>
-            <div>Allied ships down: <span className="neon-cyan">{player.ships.filter((s) => s.hits >= s.size).length}/5</span></div>
+    <div className="h-[calc(100vh-80px)] relative">
+      {/* Top HUD Bar - slides in from top */}
+      <motion.div
+        className="fixed top-20 left-0 right-0 z-40 h-16 glass flex items-center justify-between px-6"
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
+      >
+        {/* Left: Player Stats */}
+        <div className="flex items-center gap-6">
+          <div className="text-xs font-mono">
+            <div className="text-[var(--cyan)]/70 mb-1">ALLIED FLEET</div>
+            <div className="text-lg font-bold text-[var(--cyan)]">
+              {player.ships.filter((s) => s.hits >= s.size).length}/5
+              <span className="text-xs ml-1">SUNK</span>
+            </div>
           </div>
-        </section>
+          <div className="h-8 w-px bg-[var(--cyan)]/30" />
+          <div className="text-xs font-mono">
+            <div className="text-[var(--enemy)]/70 mb-1">ENEMY FLEET</div>
+            <div className="text-lg font-bold text-[var(--enemy)]">
+              {enemy.ships.filter((s) => s.hits >= s.size).length}/5
+              <span className="text-xs ml-1">SUNK</span>
+            </div>
+          </div>
+        </div>
 
-        <section className="glass relative overflow-hidden min-h-[300px]">
-          <div className="absolute top-3 left-3 z-10 font-display text-xs uppercase tracking-widest neon-enemy">Enemy Waters</div>
-          <div className="absolute top-3 right-3 z-10 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Right-click to mark</div>
+        {/* Center: Turn Indicator */}
+        <motion.div
+          className="text-center"
+          animate={{
+            borderColor: turn === "player" ? "var(--cyan)" : "var(--enemy)",
+            boxShadow: turn === "player" 
+              ? "0 0 20px rgba(0, 255, 65, 0.3)" 
+              : "0 0 20px rgba(255, 0, 0, 0.3)"
+          }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="text-xs font-mono text-white/50 mb-1">CURRENT TURN</div>
+          <div className="text-2xl font-bold font-mono">
+            {turn === "player" ? (
+              <span className="text-[var(--cyan)]">PLAYER</span>
+            ) : (
+              <span className="text-[var(--enemy)]">ENEMY</span>
+            )}
+          </div>
+        </motion.div>
+
+        {/* Right: Game Stats */}
+        <div className="flex items-center gap-6">
+          <div className="text-xs font-mono text-right">
+            <div className="text-white/50 mb-1">SHOTS FIRED</div>
+            <div className="text-lg font-bold">{shotsFired}</div>
+          </div>
+          <div className="h-8 w-px bg-white/20" />
+          <div className="text-xs font-mono text-right">
+            <div className="text-white/50 mb-1">DIFFICULTY</div>
+            <div className="text-lg font-bold uppercase">{difficulty}</div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Main 3D View Area - Full width, no side panels */}
+      <div className="pt-20 pb-48 px-4 h-full flex items-center justify-center gap-4">
+        {/* Player Board - Left */}
+        <motion.section
+          className="w-[45%] h-[70vh] glass relative overflow-hidden"
+          initial={{ opacity: 0, x: -100 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.7, duration: 0.8, ease: "easeOut" }}
+        >
+          <div className="absolute top-3 left-3 z-10 font-mono text-xs uppercase tracking-widest text-[var(--cyan)] bg-black/50 px-2 py-1">
+            ALLIED FLEET
+          </div>
+          <GameBoard3D board={player} isEnemy={false} revealShips />
+        </motion.section>
+
+        {/* Enemy Board - Right */}
+        <motion.section
+          className="w-[45%] h-[70vh] glass relative overflow-hidden"
+          initial={{ opacity: 0, x: 100 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.7, duration: 0.8, ease: "easeOut" }}
+        >
+          <div className="absolute top-3 left-3 z-10 font-mono text-xs uppercase tracking-widest text-[var(--enemy)] bg-black/50 px-2 py-1">
+            ENEMY WATERS
+          </div>
+          <div className="absolute top-3 right-3 z-10 font-mono text-[10px] uppercase tracking-widest text-white/50 bg-black/50 px-2 py-1">
+            RIGHT-CLICK TO MARK
+          </div>
           <GameBoard3D
             board={enemy}
             isEnemy
@@ -226,36 +292,41 @@ export function GameScreen({ onBack }: { onBack?: () => void }) {
             onCellClick={(x, y) => playerFire(x, y)}
             onCellRightClick={(x, y) => toggleEnemyMark(x, y)}
           />
-        </section>
+        </motion.section>
       </div>
 
-      {/* Floating Command Dock at Bottom */}
-      <motion.div 
-        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 glass px-8 py-4 flex items-center gap-6 rounded-2xl"
-        initial={{ y: 100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
+      {/* Bottom HUD Dashboard - slides in from bottom */}
+      <motion.div
+        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[90%] max-w-4xl glass flex gap-4 p-4"
+        initial={{ y: 200 }}
+        animate={{ y: 0 }}
+        transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
       >
-        <div className="flex items-center gap-4">
-          <motion.span 
-            className="font-display uppercase tracking-widest text-sm"
-            animate={{ color: turn === "player" ? "var(--cyan)" : "var(--enemy)" }}
-            transition={{ duration: 0.3 }}
-          >
-            Turn: {turn === "player" ? "Player" : "Enemy"}
-          </motion.span>
-          <span className="text-xs text-muted-foreground">Difficulty: <span className="text-foreground uppercase">{difficulty}</span></span>
-          <span className="text-xs text-muted-foreground">Shots: {shotsFired}</span>
+        {/* Comms Log */}
+        <div className="flex-1">
+          <div className="font-mono text-xs uppercase tracking-widest text-[var(--cyan)] mb-2">
+            COMMS LOG
+          </div>
+          <ul className="text-xs space-y-1 font-mono h-24 overflow-y-auto">
+            {log.map((l, i) => (
+              <li key={i} className="text-white/70" style={{ opacity: 1 - i * 0.1 }}>› {l}</li>
+            ))}
+          </ul>
         </div>
-        <div className="h-8 w-px bg-border" />
-        <motion.button 
-          className="btn-danger !py-2 !px-6 !text-xs"
-          onClick={() => { sfx.click(); setPhase("setup"); }}
-          whileHover={{ scale: 1.05, rotate: [-2, 2, -2] }}
-          whileTap={{ scale: 0.95 }}
-        >
-          Surrender
-        </motion.button>
+
+        <div className="h-full w-px bg-white/20" />
+
+        {/* Actions */}
+        <div className="flex items-center gap-4">
+          <motion.button
+            className="btn-danger !py-3 !px-6 !text-xs"
+            onClick={() => { sfx.click(); setPhase("setup"); }}
+            whileHover={{ scale: 1.05, rotate: [-2, 2, -2] }}
+            whileTap={{ scale: 0.95 }}
+          >
+            ABORT MISSION
+          </motion.button>
+        </div>
       </motion.div>
 
       <SunkBanner shipName={sunk?.name ?? null} side={sunk?.side ?? "enemy"} />

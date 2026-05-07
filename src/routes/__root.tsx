@@ -1,5 +1,5 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { ThemeProvider, useTheme } from "@/lib/theme";
@@ -7,6 +7,7 @@ import { CyberModal } from "@/components/game/CyberModal";
 import { Toaster } from "sonner";
 import { CursorEffect } from "@/components/ui/CursorEffect";
 import { AmbientBackground } from "@/components/ui/AmbientBackground";
+import { BootSequence } from "@/components/ui/BootSequence";
 
 import appCss from "../styles.css?url";
 
@@ -86,23 +87,30 @@ function NavBar() {
   const [rules, setRules] = useState(false);
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 px-6 h-20 flex items-center justify-between border-b border-border/30 backdrop-blur-xl bg-[#0a0a0a]/80">
+      <header className="fixed top-0 left-0 right-0 z-50 h-20 glass flex items-center justify-between px-6"
+        style={{
+          clipPath: 'polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px))'
+        }}
+      >
         {/* Centered Title */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           <Link to="/" className="flex items-center gap-3 group">
             <motion.div
-              className="w-10 h-10 rounded-lg border border-[var(--cyan)]/30 flex items-center justify-center font-display text-lg"
+              className="w-10 h-10 border border-[var(--cyan)]/50 flex items-center justify-center font-mono text-lg bg-black/50"
+              style={{
+                clipPath: 'polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px))'
+              }}
               whileHover={{ scale: 1.1, rotate: 180 }}
               transition={{ duration: 0.5 }}
             >
               ⌬
             </motion.div>
             <motion.div
-              className="font-display uppercase tracking-[0.2em] text-sm text-foreground"
+              className="font-mono uppercase tracking-[0.2em] text-sm text-[var(--cyan)]"
               whileHover={{ letterSpacing: "0.25em" }}
               transition={{ duration: 0.3 }}
             >
-              <span className="text-[var(--cyan)]">Battle</span>ship
+              <span className="text-[var(--cyan)]">BATTLE</span>SHIP
             </motion.div>
           </Link>
         </div>
@@ -110,14 +118,22 @@ function NavBar() {
         {/* Left side - Play & Stats */}
         <nav className="flex items-center gap-2">
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Link to="/play" className="px-4 py-2 text-xs font-display uppercase tracking-widest text-muted-foreground hover:text-[var(--cyan)] transition-colors rounded-lg hover:bg-[var(--cyan)]/5">
-              Play
+            <Link to="/play" className="px-4 py-2 text-xs font-mono uppercase tracking-widest text-white/50 hover:text-[var(--cyan)] transition-colors bg-black/30"
+              style={{
+                clipPath: 'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))'
+              }}
+            >
+              PLAY
             </Link>
           </motion.div>
           {user && (
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link to="/stats" className="px-4 py-2 text-xs font-display uppercase tracking-widest text-muted-foreground hover:text-[var(--cyan)] transition-colors rounded-lg hover:bg-[var(--cyan)]/5">
-                Stats
+              <Link to="/stats" className="px-4 py-2 text-xs font-mono uppercase tracking-widest text-white/50 hover:text-[var(--cyan)] transition-colors bg-black/30"
+                style={{
+                  clipPath: 'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))'
+                }}
+              >
+                STATS
               </Link>
             </motion.div>
           )}
@@ -127,11 +143,14 @@ function NavBar() {
         <nav className="flex items-center gap-3">
           <motion.button
             onClick={() => setRules(true)}
-            className="px-4 py-2 text-xs font-display uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-white/5"
+            className="px-4 py-2 text-xs font-mono uppercase tracking-widest text-white/50 hover:text-white transition-colors bg-black/30"
+            style={{
+              clipPath: 'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))'
+            }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            Rules
+            RULES
           </motion.button>
           <div className="hidden sm:block">
             <ThemeToggle />
@@ -143,12 +162,12 @@ function NavBar() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              Sign Out
+              LOGOUT
             </motion.button>
           ) : (
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link to="/login" className="btn-cyber !py-2 !px-4 !text-xs">
-                Login
+                LOGIN
               </Link>
             </motion.div>
           )}
@@ -185,16 +204,25 @@ function NavBar() {
 
 function RootComponent() {
   const theme = typeof document !== "undefined" ? document.documentElement.classList.contains("light") ? "light" : "dark" : "dark";
+  const [bootComplete, setBootComplete] = useState(false);
+
   return (
     <ThemeProvider>
       <AuthProvider>
         <div className="relative min-h-screen">
           <AmbientBackground />
           <CursorEffect />
-          <NavBar />
-          <main className="relative z-10">
-            <Outlet />
-          </main>
+          {!bootComplete && (
+            <BootSequence onComplete={() => setBootComplete(true)} />
+          )}
+          {bootComplete && (
+            <>
+              <NavBar />
+              <main className="relative z-10">
+                <Outlet />
+              </main>
+            </>
+          )}
           <Toaster theme={theme} position="top-right" />
         </div>
       </AuthProvider>

@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { useState } from "react";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -12,75 +11,68 @@ export const Route = createFileRoute("/")({
   }),
 });
 
-function Index() {
-  const [hoveredButton, setHoveredButton] = useState<string | null>(null);
-
+export function Index() {
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-6 py-12">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <motion.div
-        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="w-full max-w-lg"
+        className="glass max-w-md w-full p-8 text-center"
+        style={{
+          clipPath: 'polygon(0 0, calc(100% - 30px) 0, 100% 30px, 100% 100%, 30px 100%, 0 calc(100% - 30px))'
+        }}
+        initial={{ opacity: 0, y: 50, scale: 0.9 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
       >
-        <div className="text-center mb-10">
-          <div className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground mb-3">
-            Naval tactics, distilled
-          </div>
-          <h1 className="font-display text-5xl md:text-7xl uppercase leading-none">
-            Battleship
-          </h1>
-          <p className="mt-3 text-sm text-muted-foreground">
-            Everything you need. Nothing you don't.
-          </p>
-        </div>
-
-        <div className="glass p-8 space-y-5">
+        <motion.h1
+          className="font-mono text-4xl uppercase tracking-[0.2em] mb-2 text-[var(--cyan)]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.4 }}
+        >
+          BATTLESHIP
+        </motion.h1>
+        <motion.p
+          className="font-mono text-xs text-white/50 mb-8 uppercase tracking-widest"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.4 }}
+        >
+          TACTICAL COMBAT SIMULATION
+        </motion.p>
+        
+        <motion.div
+          className="space-y-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.4 }}
+        >
           <motion.div
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            onHoverStart={() => setHoveredButton('play')}
-            onHoverEnd={() => setHoveredButton(null)}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
-            <Link 
-              to="/play" 
-              className="btn-cyber btn-glow btn-shine w-full block text-center"
-            >
-              <motion.span
-                animate={{
-                  textShadow: hoveredButton === 'play' ? '0 0 30px oklch(0.96 0 0 / 0.8)' : '0 0 20px oklch(0.96 0 0 / 0.5)',
-                }}
-                transition={{ duration: 0.3 }}
-              >
-                Play
-              </motion.span>
+            <Link to="/play" className="btn-cyber w-full block">
+              INITIALIZE MISSION
             </Link>
           </motion.div>
           
           <motion.div
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            onHoverStart={() => setHoveredButton('signin')}
-            onHoverEnd={() => setHoveredButton(null)}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
-            <Link 
-              to="/login" 
-              className="btn-danger btn-scale w-full block text-center"
-            >
-              <motion.span
-                animate={{
-                  textShadow: hoveredButton === 'signin' ? '0 0 35px oklch(0.62 0.25 25 / 0.8)' : '0 0 20px oklch(0.62 0.25 25 / 0.5)',
-                }}
-                transition={{ duration: 0.3 }}
-              >
-                Sign in
-              </motion.span>
+            <Link to="/login" className="btn-danger w-full block">
+              OPERATOR LOGIN
             </Link>
           </motion.div>
-          
-          <p className="text-[10px] text-muted-foreground text-center pt-2">
-            Guests can play full matches. Sign in to save match history & stats.
-          </p>
-        </div>
+        </motion.div>
+        
+        <motion.p
+          className="text-[10px] text-white/30 text-center pt-6 font-mono uppercase tracking-widest"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.4 }}
+        >
+          GUEST OPERATORS MAY ENGAGE IN FULL COMBAT SIMULATIONS
+        </motion.p>
       </motion.div>
     </div>
   );

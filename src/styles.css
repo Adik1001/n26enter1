@@ -36,68 +36,68 @@
 }
 
 :root, .dark {
-  --radius: 0.5rem;
-  /* Sleek Stealth Dark Mode */
-  --background: #0a0a0a;
-  --foreground: #e5e5e5;
-  --card: #1a1a1a;
-  --card-foreground: #e5e5e5;
-  --popover: #151515;
-  --popover-foreground: #e5e5e5;
-  --primary: #ffffff;
-  --primary-foreground: #0a0a0a;
-  --secondary: #252525;
-  --secondary-foreground: #e5e5e5;
-  --muted: #1f1f1f;
-  --muted-foreground: #888888;
-  --accent: #00ff88;
-  --accent-foreground: #0a0a0a;
-  --destructive: #ff4757;
+  --radius: 0;
+  /* Military Tactical Theme */
+  --background: #000000;
+  --foreground: #00ff41;
+  --card: #0a0a0a;
+  --card-foreground: #00ff41;
+  --popover: #050505;
+  --popover-foreground: #00ff41;
+  --primary: #00ff41;
+  --primary-foreground: #000000;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #00ff41;
+  --muted: #0f0f0f;
+  --muted-foreground: #008f11;
+  --accent: #ffae00;
+  --accent-foreground: #000000;
+  --destructive: #ff0000;
   --destructive-foreground: #ffffff;
-  --border: #333333;
-  --input: #1a1a1a;
-  --ring: #00ff88;
+  --border: #00ff41;
+  --input: #0a0a0a;
+  --ring: #00ff41;
 
   /* Keep legacy token names used across components */
-  --cyan: #00ff88; /* "primary highlight" - muted neon green */
-  --enemy: #ff4757; /* muted neon red */
-  --grid: rgba(255, 255, 255, 0.03);
+  --cyan: #00ff41; /* Tactical green */
+  --enemy: #ff0000; /* Alert red */
+  --grid: rgba(0, 255, 65, 0.05);
 
-  --gradient-bg: radial-gradient(ellipse at 50% 0%, #1a1a1a 0%, #0a0a0a 50%, #050505 100%);
-  --shadow-glow-cyan: 0 0 0 1px rgba(0, 255, 136, 0.15), 0 0 30px rgba(0, 255, 136, 0.1);
-  --shadow-glow-enemy: 0 0 0 1px rgba(255, 71, 87, 0.15), 0 0 30px rgba(255, 71, 87, 0.1);
+  --gradient-bg: radial-gradient(ellipse at 50% 0%, #0a0a0a 0%, #000000 50%, #000000 100%);
+  --shadow-glow-cyan: 0 0 0 1px rgba(0, 255, 65, 0.3), 0 0 20px rgba(0, 255, 65, 0.2);
+  --shadow-glow-enemy: 0 0 0 1px rgba(255, 0, 0, 0.3), 0 0 20px rgba(255, 0, 0, 0.2);
 }
 
 .light {
-  --radius: 0.5rem;
-  /* Light mode: sleek stealth */
-  --background: #f5f5f5;
-  --foreground: #1a1a1a;
-  --card: #ffffff;
-  --card-foreground: #1a1a1a;
-  --popover: #ffffff;
-  --popover-foreground: #1a1a1a;
-  --primary: #0a0a0a;
-  --primary-foreground: #ffffff;
-  --secondary: #e5e5e5;
-  --secondary-foreground: #1a1a1a;
-  --muted: #d4d4d4;
-  --muted-foreground: #666666;
-  --accent: #00cc6a;
-  --accent-foreground: #ffffff;
-  --destructive: #ff4757;
+  --radius: 0;
+  /* Light mode: tactical */
+  --background: #0a0a0a;
+  --foreground: #00ff41;
+  --card: #1a1a1a;
+  --card-foreground: #00ff41;
+  --popover: #050505;
+  --popover-foreground: #00ff41;
+  --primary: #00ff41;
+  --primary-foreground: #000000;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #00ff41;
+  --muted: #0f0f0f;
+  --muted-foreground: #008f11;
+  --accent: #ffae00;
+  --accent-foreground: #000000;
+  --destructive: #ff0000;
   --destructive-foreground: #ffffff;
-  --border: #e0e0e0;
-  --input: #f5f5f5;
-  --ring: #00cc6a;
+  --border: #00ff41;
+  --input: #0a0a0a;
+  --ring: #00ff41;
 
-  --cyan: #00cc6a;
-  --enemy: #ff4757;
-  --grid: rgba(0, 0, 0, 0.05);
+  --cyan: #00ff41;
+  --enemy: #ff0000;
+  --grid: rgba(0, 255, 65, 0.05);
 
-  --gradient-bg: radial-gradient(ellipse at 50% 0%, #ffffff 0%, #f5f5f5 50%, #ebebeb 100%);
-  --shadow-glow-cyan: 0 0 0 1px rgba(0, 204, 106, 0.2), 0 0 20px rgba(0, 204, 106, 0.1);
-  --shadow-glow-enemy: 0 0 0 1px rgba(255, 71, 87, 0.2), 0 0 20px rgba(255, 71, 87, 0.1);
+  --gradient-bg: radial-gradient(ellipse at 50% 0%, #0a0a0a 0%, #000000 50%, #000000 100%);
+  --shadow-glow-cyan: 0 0 0 1px rgba(0, 255, 65, 0.3), 0 0 20px rgba(0, 255, 65, 0.2);
+  --shadow-glow-enemy: 0 0 0 1px rgba(255, 0, 0, 0.3), 0 0 20px rgba(255, 0, 0, 0.2);
 }
 
 @layer base {
@@ -126,26 +126,33 @@
       linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
   }
-  h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: 0.04em; }
+  h1, h2, h3, .font-display { font-family: var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; }
 }
 
 @layer components {
   .glass {
-    background: linear-gradient(135deg, rgba(26, 26, 26, 0.85), rgba(10, 10, 10, 0.7));
-    backdrop-filter: blur(20px) saturate(120%);
-    -webkit-backdrop-filter: blur(20px) saturate(120%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(135deg, rgba(0, 255, 65, 0.05), rgba(0, 0, 0, 0.9));
+    backdrop-filter: blur(10px) saturate(100%);
+    -webkit-backdrop-filter: blur(10px) saturate(100%);
+    border: 1px solid rgba(0, 255, 65, 0.3);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.03),
-      0 20px 60px rgba(0, 0, 0, 0.6);
-    border-radius: var(--radius);
+      0 0 20px rgba(0, 255, 65, 0.1),
+      inset 0 0 20px rgba(0, 255, 65, 0.05);
+    clip-path: polygon(
+      0 0,
+      calc(100% - 20px) 0,
+      100% 20px,
+      100% 100%,
+      20px 100%,
+      0 calc(100% - 20px)
+    );
   }
   .light .glass {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(245, 245, 245, 0.85));
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: linear-gradient(135deg, rgba(0, 255, 65, 0.05), rgba(0, 0, 0, 0.9));
+    border: 1px solid rgba(0, 255, 65, 0.3);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.8),
-      0 20px 60px rgba(0, 0, 0, 0.1);
+      0 0 20px rgba(0, 255, 65, 0.1),
+      inset 0 0 20px rgba(0, 255, 65, 0.05);
   }
   .neon-cyan {
     color: var(--cyan);
@@ -164,16 +171,24 @@
   .glow-border-cyan { box-shadow: var(--shadow-glow-cyan); }
   .glow-border-enemy { box-shadow: var(--shadow-glow-enemy); }
   .btn-cyber {
-    @apply inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-display uppercase tracking-widest text-base transition-all duration-300;
-    background: linear-gradient(135deg, rgba(0, 255, 136, 0.08), rgba(0, 255, 136, 0.03));
-    backdrop-filter: blur(12px) saturate(120%);
-    -webkit-backdrop-filter: blur(12px) saturate(120%);
-    border: 1px solid rgba(0, 255, 136, 0.2);
-    color: var(--cyan);
-    text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    @apply inline-flex items-center justify-center gap-2 px-8 py-4 font-mono uppercase tracking-widest text-base transition-all duration-200;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(0, 255, 65, 0.5);
+    color: #00ff41;
+    text-shadow: 0 0 10px rgba(0, 255, 65, 0.8);
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.2), inset 0 0 10px rgba(0, 255, 65, 0.1);
     position: relative;
     overflow: hidden;
+    clip-path: polygon(
+      0 0,
+      calc(100% - 15px) 0,
+      100% 15px,
+      100% 100%,
+      15px 100%,
+      0 calc(100% - 15px)
+    );
   }
   .btn-cyber::before {
     content: '';
@@ -187,34 +202,42 @@
     transform: translateX(100%);
   }
   .btn-cyber:hover {
-    background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 255, 136, 0.05));
-    border-color: rgba(0, 255, 136, 0.4);
-    box-shadow: 0 0 40px rgba(0, 255, 136, 0.3), 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px) scale(1.02);
-    text-shadow: 0 0 30px rgba(0, 255, 136, 0.8);
+    background: rgba(0, 255, 65, 0.15);
+    border-color: rgba(0, 255, 65, 0.8);
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.4), inset 0 0 15px rgba(0, 255, 65, 0.2);
+    transform: scale(1.02);
+    text-shadow: 0 0 20px rgba(0, 255, 65, 1);
   }
   .btn-cyber:active {
     transform: translateY(0) scale(0.98);
   }
   .btn-cyber:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
   .btn-danger {
-    @apply inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-display uppercase tracking-widest text-base transition-all duration-300;
-    background: linear-gradient(135deg, rgba(255, 71, 87, 0.12), rgba(255, 71, 87, 0.06));
-    backdrop-filter: blur(12px) saturate(120%);
-    -webkit-backdrop-filter: blur(12px) saturate(120%);
-    border: 1px solid rgba(255, 71, 87, 0.3);
-    color: var(--enemy);
-    text-shadow: 0 0 20px rgba(255, 71, 87, 0.5);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    @apply inline-flex items-center justify-center gap-2 px-8 py-4 font-mono uppercase tracking-widest text-base transition-all duration-200;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 0, 0, 0.5);
+    color: #ff0000;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.2), inset 0 0 10px rgba(255, 0, 0, 0.1);
     position: relative;
     overflow: hidden;
+    clip-path: polygon(
+      0 0,
+      calc(100% - 15px) 0,
+      100% 15px,
+      100% 100%,
+      15px 100%,
+      0 calc(100% - 15px)
+    );
   }
   .btn-danger:hover {
-    background: linear-gradient(135deg, rgba(255, 71, 87, 0.2), rgba(255, 71, 87, 0.08));
-    border-color: rgba(255, 71, 87, 0.5);
-    box-shadow: 0 0 40px rgba(255, 71, 87, 0.3), 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px) scale(1.02);
-    text-shadow: 0 0 35px rgba(255, 71, 87, 0.8);
+    background: rgba(255, 0, 0, 0.15);
+    border-color: rgba(255, 0, 0, 0.8);
+    box-shadow: 0 0 30px rgba(255, 0, 0, 0.4), inset 0 0 15px rgba(255, 0, 0, 0.2);
+    transform: scale(1.02);
+    text-shadow: 0 0 20px rgba(255, 0, 0, 1);
     animation: glitch-effect 0.3s ease-in-out;
   }
   .btn-danger:active {

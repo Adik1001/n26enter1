@@ -30,14 +30,22 @@ function Lobby({ onSelectBot, onSelectMultiplayer }: { onSelectBot: () => void; 
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-6">
-      <div className="glass max-w-3xl w-full p-12 space-y-10">
+    <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center p-6">
+      <motion.div
+        className="glass max-w-3xl w-full p-12 space-y-10"
+        style={{
+          clipPath: 'polygon(0 0, calc(100% - 40px) 0, 100% 40px, 100% 100%, 40px 100%, 0 calc(100% - 40px))'
+        }}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
         <div className="flex items-start justify-between gap-6 flex-wrap">
           <div>
-            <h1 className="font-display text-4xl uppercase tracking-widest">Play</h1>
-            <p className="text-sm text-muted-foreground mt-2">Pick a mode. Get in. No noise.</p>
+            <h1 className="font-mono text-4xl uppercase tracking-[0.2em] text-[var(--cyan)]">MISSION SELECT</h1>
+            <p className="text-sm text-white/50 mt-2 font-mono uppercase tracking-widest">Select combat mode. Engage.</p>
           </div>
-          <a href="/leaderboard" className="text-xs text-muted-foreground hover:text-foreground transition">
+          <a href="/leaderboard" className="text-xs text-white/50 hover:text-[var(--cyan)] transition font-mono uppercase tracking-widest">
             Leaderboard →
           </a>
         </div>
@@ -45,67 +53,73 @@ function Lobby({ onSelectBot, onSelectMultiplayer }: { onSelectBot: () => void; 
         <div className="grid sm:grid-cols-2 gap-8">
           <motion.button
             onClick={() => { sfx.click(); onSelectBot(); }}
-            className="glass p-8 text-left space-y-4 hover:border-border/80 transition group rounded-xl border border-border relative overflow-hidden"
-            whileHover={{ scale: 1.02, y: -4 }}
+            className="glass p-8 text-left space-y-4 border border-[var(--cyan)]/30 relative overflow-hidden"
+            style={{
+              clipPath: 'polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px))'
+            }}
+            whileHover={{ scale: 1.02, y: -4, borderColor: 'rgba(0, 255, 65, 0.6)' }}
             whileTap={{ scale: 0.98 }}
             onHoverStart={() => setHoveredCard('bot')}
             onHoverEnd={() => setHoveredCard(null)}
           >
             <motion.div 
-              className="absolute inset-0 bg-gradient-to-br from-[var(--cyan)]/5 to-transparent opacity-0"
+              className="absolute inset-0 bg-gradient-to-br from-[var(--cyan)]/10 to-transparent opacity-0"
               animate={{ opacity: hoveredCard === 'bot' ? 1 : 0 }}
               transition={{ duration: 0.3 }}
             />
             <div className="relative z-10">
-              <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Solo</div>
+              <div className="text-[10px] uppercase tracking-[0.25em] text-white/50 font-mono">SOLO OPERATIONS</div>
               <div>
                 <motion.div 
-                  className="font-display text-xl uppercase tracking-widest text-foreground"
+                  className="font-mono text-xl uppercase tracking-widest text-[var(--cyan)]"
                   animate={{
-                    textShadow: hoveredCard === 'bot' ? '0 0 20px oklch(0.96 0 0 / 0.6)' : 'none',
+                    textShadow: hoveredCard === 'bot' ? '0 0 20px rgba(0, 255, 65, 0.8)' : 'none',
                   }}
                   transition={{ duration: 0.3 }}
                 >
-                  Vs Bot
+                  VS BOT
                 </motion.div>
-                <div className="text-xs text-muted-foreground mt-1">Adaptive AI with three difficulty levels</div>
+                <div className="text-xs text-white/50 mt-1 font-mono">Adaptive AI with three difficulty levels</div>
               </div>
-              <div className="text-xs text-muted-foreground">Unlimited · Play offline</div>
+              <div className="text-xs text-white/50 font-mono">UNLIMITED · OFFLINE COMBAT</div>
             </div>
           </motion.button>
 
           <motion.button
             onClick={() => { sfx.click(); onSelectMultiplayer(); }}
-            className="glass p-8 text-left space-y-4 hover:border-border/80 transition group rounded-xl border border-border relative overflow-hidden"
-            whileHover={{ scale: 1.02, y: -4 }}
+            className="glass p-8 text-left space-y-4 border border-[var(--enemy)]/30 relative overflow-hidden"
+            style={{
+              clipPath: 'polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px))'
+            }}
+            whileHover={{ scale: 1.02, y: -4, borderColor: 'rgba(255, 0, 0, 0.6)' }}
             whileTap={{ scale: 0.98 }}
             onHoverStart={() => setHoveredCard('mp')}
             onHoverEnd={() => setHoveredCard(null)}
           >
             <motion.div 
-              className="absolute inset-0 bg-gradient-to-br from-[var(--enemy)]/5 to-transparent opacity-0"
+              className="absolute inset-0 bg-gradient-to-br from-[var(--enemy)]/10 to-transparent opacity-0"
               animate={{ opacity: hoveredCard === 'mp' ? 1 : 0 }}
               transition={{ duration: 0.3 }}
             />
             <div className="relative z-10">
-              <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Online</div>
+              <div className="text-[10px] uppercase tracking-[0.25em] text-white/50 font-mono">MULTIPLAYER OPS</div>
               <div>
                 <motion.div 
-                  className="font-display text-xl uppercase tracking-widest text-foreground"
+                  className="font-mono text-xl uppercase tracking-widest text-[var(--enemy)]"
                   animate={{
-                    textShadow: hoveredCard === 'mp' ? '0 0 20px oklch(0.62 0.25 25 / 0.6)' : 'none',
+                    textShadow: hoveredCard === 'mp' ? '0 0 20px rgba(255, 0, 0, 0.8)' : 'none',
                   }}
                   transition={{ duration: 0.3 }}
                 >
-                  Multiplayer
+                  MULTIPLAYER
                 </motion.div>
-                <div className="text-xs text-muted-foreground mt-1">Share a link. Play 2–4 players in realtime</div>
+                <div className="text-xs text-white/50 mt-1 font-mono">Share a link. Play 2–4 players in realtime</div>
               </div>
-              <div className="text-xs text-muted-foreground">Timed or unlimited · Custom fleets</div>
+              <div className="text-xs text-white/50 font-mono">TIMED OR UNLIMITED · CUSTOM FLEETS</div>
             </div>
           </motion.button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -149,29 +163,47 @@ function CreateMultiplayer({ onBack }: { onBack: () => void }) {
   }
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-6">
-      <div className="glass max-w-lg w-full p-8 space-y-6 overflow-y-auto max-h-[90vh]">
+    <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center p-6">
+      <motion.div
+        className="glass max-w-lg w-full p-8 space-y-6 overflow-y-auto max-h-[90vh]"
+        style={{
+          clipPath: 'polygon(0 0, calc(100% - 30px) 0, 100% 30px, 100% 100%, 30px 100%, 0 calc(100% - 30px))'
+        }}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
         <div className="flex items-center gap-3">
-          <button onClick={() => { sfx.click(); onBack(); }} className="text-muted-foreground hover:text-foreground text-sm">← Back</button>
-          <h2 className="font-display text-xl uppercase tracking-widest neon-cyan">New Battle</h2>
+          <motion.button 
+            onClick={() => { sfx.click(); onBack(); }} 
+            className="text-white/50 hover:text-[var(--cyan)] text-sm font-mono uppercase tracking-widest"
+            whileHover={{ x: -5 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            ← ABORT
+          </motion.button>
+          <h2 className="font-mono text-xl uppercase tracking-widest text-[var(--cyan)]">NEW BATTLE</h2>
         </div>
 
         <form onSubmit={handleCreate} className="space-y-5">
           <div>
-            <label className="text-xs font-display uppercase tracking-widest text-muted-foreground">Your Callsign</label>
+            <label className="text-xs font-mono uppercase tracking-widest text-white/50">OPERATOR CALLSIGN</label>
             <input
               type="text"
-              className="input-cyber mt-1"
-              placeholder="Commander"
+              className="input-cyber mt-1 font-mono text-sm"
+              placeholder="COMMANDER"
               maxLength={32}
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               autoFocus
+              style={{
+                clipPath: 'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))'
+              }}
             />
           </div>
 
           <div>
-            <label className="text-xs font-display uppercase tracking-widest text-muted-foreground mb-2 block">Players</label>
+            <label className="text-xs font-mono uppercase tracking-widest text-white/50 mb-2 block">OPERATORS</label>
             <div className="flex gap-3">
               {([2, 3, 4] as const).map((n) => (
                 <motion.button
@@ -182,11 +214,14 @@ function CreateMultiplayer({ onBack }: { onBack: () => void }) {
                   whileTap={{ scale: 0.95 }}
                   onHoverStart={() => setHoveredButton(`player-${n}`)}
                   onHoverEnd={() => setHoveredButton(null)}
-                  className={`flex-1 py-3 rounded-lg text-sm font-display uppercase tracking-widest border transition relative overflow-hidden ${
+                  className={`flex-1 py-3 text-sm font-mono uppercase tracking-widest border transition relative overflow-hidden ${
                     playerCount === n
                       ? "border-[var(--cyan)] text-[var(--cyan)] bg-[var(--cyan)]/10"
-                      : "border-border text-muted-foreground"
+                      : "border-white/20 text-white/50"
                   }`}
+                  style={{
+                    clipPath: 'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))'
+                  }}
                 >
                   <motion.span
                     animate={{
@@ -200,14 +235,14 @@ function CreateMultiplayer({ onBack }: { onBack: () => void }) {
               ))}
             </div>
             {playerCount > 2 && (
-              <p className="text-xs text-muted-foreground mt-1">
-                Players share a room link. Turn-based — select your target each round.
+              <p className="text-xs text-white/50 mt-1 font-mono">
+                Operators share a room link. Turn-based — select your target each round.
               </p>
             )}
           </div>
 
           <div>
-            <label className="text-xs font-display uppercase tracking-widest text-muted-foreground mb-2 block">Timer Mode</label>
+            <label className="text-xs font-mono uppercase tracking-widest text-white/50 mb-2 block">TIMER MODE</label>
             <div className="flex gap-3">
               {(["4min", "10min", "infinite"] as GameMode[]).map((m) => (
                 <motion.button
@@ -218,11 +253,14 @@ function CreateMultiplayer({ onBack }: { onBack: () => void }) {
                   whileTap={{ scale: 0.95 }}
                   onHoverStart={() => setHoveredButton(`mode-${m}`)}
                   onHoverEnd={() => setHoveredButton(null)}
-                  className={`flex-1 py-3 rounded-lg text-xs font-display uppercase tracking-widest border transition relative overflow-hidden ${
+                  className={`flex-1 py-3 text-xs font-mono uppercase tracking-widest border transition relative overflow-hidden ${
                     gameMode === m
                       ? "border-[var(--cyan)] text-[var(--cyan)] bg-[var(--cyan)]/10"
-                      : "border-border text-muted-foreground"
+                      : "border-white/20 text-white/50"
                   }`}
+                  style={{
+                    clipPath: 'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))'
+                  }}
                 >
                   <motion.span
                     animate={{
@@ -230,68 +268,79 @@ function CreateMultiplayer({ onBack }: { onBack: () => void }) {
                     }}
                     transition={{ duration: 0.2 }}
                   >
-                    {m === "infinite" ? "∞ No Limit" : m === "4min" ? "4 Min" : "10 Min"}
+                    {m === "infinite" ? "∞ NO LIMIT" : m === "4min" ? "4 MIN" : "10 MIN"}
                   </motion.span>
                 </motion.button>
               ))}
             </div>
             {gameMode !== "infinite" && (
-              <p className="text-xs text-muted-foreground mt-1">
-                Each player's clock only ticks on their own turn. Most ships sunk wins on timeout.
+              <p className="text-xs text-white/50 mt-1 font-mono">
+                Each operator's clock only ticks on their own turn. Most ships sunk wins on timeout.
               </p>
             )}
           </div>
 
-          <button
+          <motion.button
             type="button"
             onClick={() => { sfx.click(); setShowAdvanced((v) => !v); }}
-            className="text-xs text-muted-foreground hover:text-foreground transition w-full text-left"
+            className="text-xs text-white/50 hover:text-[var(--cyan)] transition w-full text-left font-mono uppercase tracking-widest"
+            whileHover={{ x: 5 }}
           >
-            {showAdvanced ? "▼" : "▶"} Advanced Settings
-          </button>
+            {showAdvanced ? "▼" : "▶"} ADVANCED SETTINGS
+          </motion.button>
 
           {showAdvanced && (
-            <div className="space-y-4 border border-border rounded-md p-4">
+            <motion.div
+              className="space-y-4 border border-white/20 p-4"
+              style={{
+                clipPath: 'polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px))'
+              }}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              transition={{ duration: 0.3 }}
+            >
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-xs font-display uppercase tracking-widest text-muted-foreground">Grid Size</label>
-                  <span className="text-xs font-display neon-cyan">{gridSize}×{gridSize}</span>
+                  <label className="text-xs font-mono uppercase tracking-widest text-white/50">GRID SIZE</label>
+                  <span className="text-xs font-mono text-[var(--cyan)]">{gridSize}×{gridSize}</span>
                 </div>
                 <input
                   type="range" min={8} max={16} step={1} value={gridSize}
                   onChange={(e) => setGridSize(Number(e.target.value))}
                   className="w-full accent-[var(--cyan)]"
                 />
-                <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
+                <div className="flex justify-between text-[10px] text-white/50 mt-1 font-mono">
                   <span>8×8</span><span>12×12</span><span>16×16</span>
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-xs font-display uppercase tracking-widest text-muted-foreground">Fleet Configuration</label>
-                  <span className="text-xs text-muted-foreground">{total} ships</span>
+                  <label className="text-xs font-mono uppercase tracking-widest text-white/50">FLEET CONFIGURATION</label>
+                  <span className="text-xs font-mono text-white/50">{total} ships</span>
                 </div>
                 <div className="space-y-2">
                   {SHIP_TYPES.map((def) => (
                     <div key={def.id} className="flex items-center gap-3">
-                      <span className="text-xs text-muted-foreground w-24 font-mono">{def.name}</span>
+                      <span className="text-xs text-white/50 w-24 font-mono">{def.name}</span>
                       <div className="flex items-center gap-1">
                         {Array.from({ length: def.size }).map((_, i) => (
-                          <div key={i} className="w-3 h-3 rounded-sm bg-[var(--cyan)]/40" />
+                          <div key={i} className="w-3 h-3 bg-[var(--cyan)]/40" style={{ clipPath: 'polygon(0 0, calc(100% - 2px) 0, 100% 2px, 100% 100%, 2px 100%, 0 calc(100% - 2px))' }} />
                         ))}
                       </div>
                       <div className="flex items-center gap-2 ml-auto">
                         <button
                           type="button"
-                          onClick={() => setFleet((f) => ({ ...f, [def.id]: Math.max(0, (f[def.id as ShipKind] ?? 1) - 1) }))}
-                          className="w-6 h-6 rounded border border-border text-muted-foreground hover:text-foreground hover:border-[var(--cyan)] text-xs"
+                          onClick={() => setFleet((f) => ({ ...f, [def.id as ShipKind]: Math.max(0, (f[def.id as ShipKind] ?? 1) - 1) }))}
+                          className="w-6 h-6 border border-white/20 text-white/50 hover:text-[var(--cyan)] hover:border-[var(--cyan)] text-xs font-mono"
+                          style={{ clipPath: 'polygon(0 0, calc(100% - 2px) 0, 100% 2px, 100% 100%, 2px 100%, 0 calc(100% - 2px))' }}
                         >−</button>
-                        <span className="text-sm font-display neon-cyan w-4 text-center">{fleet[def.id as ShipKind] ?? 0}</span>
+                        <span className="text-sm font-mono text-[var(--cyan)] w-4 text-center">{fleet[def.id as ShipKind] ?? 0}</span>
                         <button
                           type="button"
-                          onClick={() => setFleet((f) => ({ ...f, [def.id]: Math.min(5, (f[def.id as ShipKind] ?? 1) + 1) }))}
-                          className="w-6 h-6 rounded border border-border text-muted-foreground hover:text-foreground hover:border-[var(--cyan)] text-xs"
+                          onClick={() => setFleet((f) => ({ ...f, [def.id as ShipKind]: Math.min(5, (f[def.id as ShipKind] ?? 1) + 1) }))}
+                          className="w-6 h-6 border border-white/20 text-white/50 hover:text-[var(--cyan)] hover:border-[var(--cyan)] text-xs font-mono"
+                          style={{ clipPath: 'polygon(0 0, calc(100% - 2px) 0, 100% 2px, 100% 100%, 2px 100%, 0 calc(100% - 2px))' }}
                         >+</button>
                       </div>
                     </div>
@@ -299,20 +348,20 @@ function CreateMultiplayer({ onBack }: { onBack: () => void }) {
                 </div>
                 <button
                   type="button"
-                  className="mt-2 text-xs text-muted-foreground hover:text-foreground"
+                  className="mt-2 text-xs text-white/50 hover:text-[var(--cyan)] font-mono uppercase tracking-widest"
                   onClick={() => setFleet({ ...DEFAULT_FLEET })}
                 >
-                  Reset to default
+                  RESET TO DEFAULT
                 </button>
               </div>
-            </div>
+            </motion.div>
           )}
 
-          {error && <p className="text-xs text-[var(--enemy)]">{error}</p>}
+          {error && <p className="text-xs text-[var(--enemy)] font-mono uppercase tracking-widest">⚠ {error}</p>}
 
           <motion.button
             disabled={creating} 
-            className="btn-cyber btn-pulse w-full"
+            className="btn-cyber w-full"
             whileHover={{ scale: creating ? 1 : 1.02 }}
             whileTap={{ scale: creating ? 1 : 0.98 }}
             onHoverStart={() => setHoveredButton('create')}
@@ -320,15 +369,15 @@ function CreateMultiplayer({ onBack }: { onBack: () => void }) {
           >
             <motion.span
               animate={{
-                textShadow: hoveredButton === 'create' && !creating ? '0 0 30px oklch(0.96 0 0 / 0.8)' : '0 0 20px oklch(0.96 0 0 / 0.5)',
+                textShadow: hoveredButton === 'create' && !creating ? '0 0 30px rgba(0, 255, 65, 0.8)' : '0 0 20px rgba(0, 255, 65, 0.5)',
               }}
               transition={{ duration: 0.3 }}
             >
-              {creating ? "Creating…" : "Create Battle & Get Link"}
+              {creating ? "INITIALIZING..." : "CREATE BATTLE & GET LINK"}
             </motion.span>
           </motion.button>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 }
