@@ -37,67 +37,67 @@
 
 :root, .dark {
   --radius: 0.5rem;
-  /* Minimal dark (inspired by editorial layouts) */
-  --background: oklch(0.09 0 0);
-  --foreground: oklch(0.96 0 0);
-  --card: oklch(0.12 0 0 / 0.78);
-  --card-foreground: oklch(0.96 0 0);
-  --popover: oklch(0.12 0 0 / 0.92);
-  --popover-foreground: oklch(0.96 0 0);
-  --primary: oklch(0.96 0 0);
-  --primary-foreground: oklch(0.09 0 0);
-  --secondary: oklch(0.16 0 0);
-  --secondary-foreground: oklch(0.96 0 0);
-  --muted: oklch(0.14 0 0);
-  --muted-foreground: oklch(0.7 0 0);
-  --accent: oklch(0.62 0.25 25);
-  --accent-foreground: oklch(0.98 0 0);
-  --destructive: oklch(0.62 0.25 25);
-  --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.96 0 0 / 0.12);
-  --input: oklch(0.12 0 0 / 0.86);
-  --ring: oklch(0.62 0.25 25);
+  /* Sleek Stealth Dark Mode */
+  --background: #0a0a0a;
+  --foreground: #e5e5e5;
+  --card: #1a1a1a;
+  --card-foreground: #e5e5e5;
+  --popover: #151515;
+  --popover-foreground: #e5e5e5;
+  --primary: #ffffff;
+  --primary-foreground: #0a0a0a;
+  --secondary: #252525;
+  --secondary-foreground: #e5e5e5;
+  --muted: #1f1f1f;
+  --muted-foreground: #888888;
+  --accent: #00ff88;
+  --accent-foreground: #0a0a0a;
+  --destructive: #ff4757;
+  --destructive-foreground: #ffffff;
+  --border: #333333;
+  --input: #1a1a1a;
+  --ring: #00ff88;
 
   /* Keep legacy token names used across components */
-  --cyan: oklch(0.96 0 0); /* "primary highlight" */
-  --enemy: oklch(0.62 0.25 25);
-  --grid: oklch(0.96 0 0 / 0.08);
+  --cyan: #00ff88; /* "primary highlight" - muted neon green */
+  --enemy: #ff4757; /* muted neon red */
+  --grid: rgba(255, 255, 255, 0.03);
 
-  --gradient-bg: radial-gradient(ellipse at 30% 0%, oklch(0.13 0 0) 0%, oklch(0.09 0 0) 55%, oklch(0.06 0 0) 100%);
-  --shadow-glow-cyan: 0 0 0 1px oklch(0.96 0 0 / 0.12), 0 10px 40px oklch(0 0 0 / 0.55);
-  --shadow-glow-enemy: 0 0 0 1px oklch(0.62 0.25 25 / 0.22), 0 12px 46px oklch(0.62 0.25 25 / 0.2);
+  --gradient-bg: radial-gradient(ellipse at 50% 0%, #1a1a1a 0%, #0a0a0a 50%, #050505 100%);
+  --shadow-glow-cyan: 0 0 0 1px rgba(0, 255, 136, 0.15), 0 0 30px rgba(0, 255, 136, 0.1);
+  --shadow-glow-enemy: 0 0 0 1px rgba(255, 71, 87, 0.15), 0 0 30px rgba(255, 71, 87, 0.1);
 }
 
 .light {
   --radius: 0.5rem;
-  /* Light mode: still monochrome + red */
-  --background: oklch(0.98 0 0);
-  --foreground: oklch(0.08 0 0);
-  --card: oklch(1 0 0 / 0.82);
-  --card-foreground: oklch(0.08 0 0);
-  --popover: oklch(1 0 0 / 0.95);
-  --popover-foreground: oklch(0.08 0 0);
-  --primary: oklch(0.08 0 0);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.94 0 0);
-  --secondary-foreground: oklch(0.18 0 0);
-  --muted: oklch(0.92 0 0);
-  --muted-foreground: oklch(0.42 0 0);
-  --accent: oklch(0.62 0.25 25);
-  --accent-foreground: oklch(0.98 0 0);
-  --destructive: oklch(0.62 0.25 25);
-  --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.08 0 0 / 0.12);
-  --input: oklch(0.98 0 0 / 0.9);
-  --ring: oklch(0.62 0.25 25);
+  /* Light mode: sleek stealth */
+  --background: #f5f5f5;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  --primary: #0a0a0a;
+  --primary-foreground: #ffffff;
+  --secondary: #e5e5e5;
+  --secondary-foreground: #1a1a1a;
+  --muted: #d4d4d4;
+  --muted-foreground: #666666;
+  --accent: #00cc6a;
+  --accent-foreground: #ffffff;
+  --destructive: #ff4757;
+  --destructive-foreground: #ffffff;
+  --border: #e0e0e0;
+  --input: #f5f5f5;
+  --ring: #00cc6a;
 
-  --cyan: oklch(0.08 0 0);
-  --enemy: oklch(0.62 0.25 25);
-  --grid: oklch(0.08 0 0 / 0.06);
+  --cyan: #00cc6a;
+  --enemy: #ff4757;
+  --grid: rgba(0, 0, 0, 0.05);
 
-  --gradient-bg: radial-gradient(ellipse at 30% 0%, oklch(1 0 0) 0%, oklch(0.985 0 0) 55%, oklch(0.97 0 0) 100%);
-  --shadow-glow-cyan: 0 0 0 1px oklch(0 0 0 / 0.08), 0 10px 32px oklch(0 0 0 / 0.08);
-  --shadow-glow-enemy: 0 0 0 1px oklch(0.62 0.25 25 / 0.12), 0 12px 38px oklch(0.62 0.25 25 / 0.08);
+  --gradient-bg: radial-gradient(ellipse at 50% 0%, #ffffff 0%, #f5f5f5 50%, #ebebeb 100%);
+  --shadow-glow-cyan: 0 0 0 1px rgba(0, 204, 106, 0.2), 0 0 20px rgba(0, 204, 106, 0.1);
+  --shadow-glow-enemy: 0 0 0 1px rgba(255, 71, 87, 0.2), 0 0 20px rgba(255, 71, 87, 0.1);
 }
 
 @layer base {
@@ -114,38 +114,38 @@
     content: "";
     position: fixed; inset: 0;
     background-image:
-      linear-gradient(oklch(0.96 0 0 / 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, oklch(0.96 0 0 / 0.03) 1px, transparent 1px);
-    background-size: 48px 48px;
+      linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 64px 64px;
     pointer-events: none;
-    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+    mask-image: radial-gradient(ellipse at center, black 20%, transparent 70%);
     z-index: 0;
   }
   .light body::before {
     background-image:
-      linear-gradient(oklch(0.08 0 0 / 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, oklch(0.08 0 0 / 0.03) 1px, transparent 1px);
+      linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
   }
   h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: 0.04em; }
 }
 
 @layer components {
   .glass {
-    background: linear-gradient(135deg, oklch(0.14 0 0 / 0.72), oklch(0.1 0 0 / 0.5));
-    backdrop-filter: blur(18px) saturate(140%);
-    -webkit-backdrop-filter: blur(18px) saturate(140%);
-    border: 1px solid oklch(0.98 0 0 / 0.16);
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.85), rgba(10, 10, 10, 0.7));
+    backdrop-filter: blur(20px) saturate(120%);
+    -webkit-backdrop-filter: blur(20px) saturate(120%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow:
-      inset 0 1px 0 oklch(1 0 0 / 0.05),
-      0 8px 32px oklch(0 0 0 / 0.4);
+      inset 0 1px 0 rgba(255, 255, 255, 0.03),
+      0 20px 60px rgba(0, 0, 0, 0.6);
     border-radius: var(--radius);
   }
   .light .glass {
-    background: linear-gradient(135deg, oklch(1 0 0 / 0.88), oklch(0.96 0 0 / 0.75));
-    border: 1px solid oklch(0.08 0 0 / 0.14);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(245, 245, 245, 0.85));
+    border: 1px solid rgba(0, 0, 0, 0.08);
     box-shadow:
-      inset 0 1px 0 oklch(1 0 0 / 0.6),
-      0 8px 32px oklch(0 0 0 / 0.12);
+      inset 0 1px 0 rgba(255, 255, 255, 0.8),
+      0 20px 60px rgba(0, 0, 0, 0.1);
   }
   .neon-cyan {
     color: var(--cyan);
@@ -165,13 +165,13 @@
   .glow-border-enemy { box-shadow: var(--shadow-glow-enemy); }
   .btn-cyber {
     @apply inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-display uppercase tracking-widest text-base transition-all duration-300;
-    background: linear-gradient(135deg, oklch(0.96 0 0 / 0.08), oklch(0.96 0 0 / 0.04));
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.08), rgba(0, 255, 136, 0.03));
     backdrop-filter: blur(12px) saturate(120%);
     -webkit-backdrop-filter: blur(12px) saturate(120%);
-    border: 1px solid oklch(0.96 0 0 / 0.25);
+    border: 1px solid rgba(0, 255, 136, 0.2);
     color: var(--cyan);
-    text-shadow: 0 0 20px oklch(0.96 0 0 / 0.5);
-    box-shadow: 0 4px 20px oklch(0 0 0 / 0.3), inset 0 1px 0 oklch(1 0 0 / 0.1);
+    text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     position: relative;
     overflow: hidden;
   }
@@ -187,11 +187,11 @@
     transform: translateX(100%);
   }
   .btn-cyber:hover {
-    background: linear-gradient(135deg, oklch(0.96 0 0 / 0.12), oklch(0.96 0 0 / 0.06));
-    border-color: oklch(0.96 0 0 / 0.4);
-    box-shadow: 0 0 30px oklch(0.96 0 0 / 0.3), 0 8px 32px oklch(0 0 0 / 0.4), inset 0 1px 0 oklch(1 0 0 / 0.15);
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 255, 136, 0.05));
+    border-color: rgba(0, 255, 136, 0.4);
+    box-shadow: 0 0 40px rgba(0, 255, 136, 0.3), 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     transform: translateY(-2px) scale(1.02);
-    text-shadow: 0 0 30px oklch(0.96 0 0 / 0.8);
+    text-shadow: 0 0 30px rgba(0, 255, 136, 0.8);
   }
   .btn-cyber:active {
     transform: translateY(0) scale(0.98);
@@ -199,22 +199,22 @@
   .btn-cyber:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
   .btn-danger {
     @apply inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-display uppercase tracking-widest text-base transition-all duration-300;
-    background: linear-gradient(135deg, oklch(0.62 0.25 25 / 0.12), oklch(0.62 0.25 25 / 0.06));
+    background: linear-gradient(135deg, rgba(255, 71, 87, 0.12), rgba(255, 71, 87, 0.06));
     backdrop-filter: blur(12px) saturate(120%);
     -webkit-backdrop-filter: blur(12px) saturate(120%);
-    border: 1px solid oklch(0.62 0.25 25 / 0.4);
+    border: 1px solid rgba(255, 71, 87, 0.3);
     color: var(--enemy);
-    text-shadow: 0 0 20px oklch(0.62 0.25 25 / 0.5);
-    box-shadow: 0 4px 20px oklch(0 0 0 / 0.3), inset 0 1px 0 oklch(1 0 0 / 0.1);
+    text-shadow: 0 0 20px rgba(255, 71, 87, 0.5);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     position: relative;
     overflow: hidden;
   }
   .btn-danger:hover {
-    background: linear-gradient(135deg, oklch(0.62 0.25 25 / 0.18), oklch(0.62 0.25 25 / 0.1));
-    border-color: oklch(0.62 0.25 25 / 0.6);
-    box-shadow: 0 0 35px oklch(0.62 0.25 25 / 0.4), 0 8px 32px oklch(0 0 0 / 0.4), inset 0 1px 0 oklch(1 0 0 / 0.15);
+    background: linear-gradient(135deg, rgba(255, 71, 87, 0.2), rgba(255, 71, 87, 0.08));
+    border-color: rgba(255, 71, 87, 0.5);
+    box-shadow: 0 0 40px rgba(255, 71, 87, 0.3), 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     transform: translateY(-2px) scale(1.02);
-    text-shadow: 0 0 35px oklch(0.62 0.25 25 / 0.8);
+    text-shadow: 0 0 35px rgba(255, 71, 87, 0.8);
     animation: glitch-effect 0.3s ease-in-out;
   }
   .btn-danger:active {

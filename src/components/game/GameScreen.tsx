@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { GameBoard3D } from "./GameBoard3D";
 import { CyberModal } from "./CyberModal";
 import { SunkBanner } from "./SunkBanner";
 import { PlacementBoard } from "./PlacementBoard";
+import { ScreenEffect } from "@/components/ui/ScreenEffect";
+import { VictoryCinematic } from "@/components/ui/VictoryCinematic";
+import { DefeatCinematic } from "@/components/ui/DefeatCinematic";
 import {
   type BoardState, type PlacedShip, autoPlace, allSunk, fireAt, cellKey,
 } from "@/lib/game/types";
@@ -28,6 +32,8 @@ export function GameScreen({ onBack }: { onBack?: () => void }) {
   const [boardsRevealed, setBoardsRevealed] = useState(false);
   const [sunk, setSunk] = useState<{ name: string; side: "enemy" | "player" } | null>(null);
   const [shotsFired, setShotsFired] = useState(0);
+  const [screenEffect, setScreenEffect] = useState<"hit-enemy" | "hit-player" | "sunk-enemy" | "sunk-player" | null>(null);
+  const [showCinematic, setShowCinematic] = useState<"victory" | "defeat" | null>(null);
   const startTime = useRef<number>(0);
   const aiMem = useRef(createAI());
   const savedRef = useRef(false);
@@ -81,17 +87,23 @@ export function GameScreen({ onBack }: { onBack?: () => void }) {
     setEnemy({ ...board, marks });
     setShotsFired((n) => n + 1);
     if (outcome === "miss") { sfx.miss(); pushLog(`Miss at ${String.fromCharCode(65 + x)}${y + 1}`); }
-    else if (outcome === "hit") { sfx.hit(); pushLog(`Direct hit at ${String.fromCharCode(65 + x)}${y + 1}`); }
+    else if (outcome === "hit") { 
+      sfx.hit(); 
+      pushLog(`Direct hit at ${String.fromCharCode(65 + x)}${y + 1}`);
+      setScreenEffect("hit-enemy");
+    }
     else if (outcome === "sunk" && ship) {
       sfx.sunk();
       pushLog(`Enemy ${ship.name} destroyed!`);
       setSunk({ name: ship.name, side: "enemy" });
+      setScreenEffect("sunk-enemy");
     }
     if (allSunk(board)) {
       setTimeout(() => {
         sfx.win();
         setPhase("over");
         setModal({ variant: "win", title: "Victory", body: "Enemy fleet annihilated. Command salutes you." });
+        setShowCinematic("victory");
         recordMatch("win");
       }, 350);
       return;
@@ -122,17 +134,23 @@ export function GameScreen({ onBack }: { onBack?: () => void }) {
       setPlayer(board);
       aiPostShot(aiMem.current, move.x, move.y, outcome, board);
       if (outcome === "miss") { sfx.miss(); pushLog(`Enemy missed at ${String.fromCharCode(65 + move.x)}${move.y + 1}`); }
-      else if (outcome === "hit") { sfx.hit(); pushLog(`Enemy hit at ${String.fromCharCode(65 + move.x)}${move.y + 1}`); }
+      else if (outcome === "hit") { 
+        sfx.hit(); 
+        pushLog(`Enemy hit at ${String.fromCharCode(65 + move.x)}${move.y + 1}`);
+        setScreenEffect("hit-player");
+      }
       else if (outcome === "sunk" && ship) {
         sfx.sunk();
         pushLog(`Your ${ship.name} was destroyed!`);
         setSunk({ name: ship.name, side: "player" });
+        setScreenEffect("sunk-player");
       }
       if (allSunk(board)) {
         setTimeout(() => {
           sfx.lose();
           setPhase("over");
           setModal({ variant: "lose", title: "Defeat", body: "Fleet eliminated. Stand down." });
+          setShowCinematic("defeat");
           recordMatch("loss");
         }, 350);
         return;
@@ -149,16 +167,26 @@ export function GameScreen({ onBack }: { onBack?: () => void }) {
       <div className="h-[calc(100vh-80px)] p-4">
         <div className="flex items-center gap-3 mb-3">
           {onBack && (
-            <button onClick={() => { sfx.click(); onBack(); }} className="text-muted-foreground hover:text-foreground text-xs font-display uppercase tracking-widest">← Lobby</button>
+            <motion.button 
+              onClick={() => { sfx.click(); onBack(); }} 
+              className="text-muted-foreground hover:text-foreground text-xs font-display uppercase tracking-widest"
+              whileHover={{ x: -5, color: "var(--cyan)" }}
+              whileTap={{ scale: 0.95 }}
+            >
+              ← Lobby
+            </motion.button>
           )}
           <span className="font-display text-xs uppercase tracking-widest text-muted-foreground">Difficulty:</span>
           {(["easy", "medium", "hard"] as Difficulty[]).map((d) => (
-            <button key={d}
+            <motion.button 
+              key={d}
               onClick={() => { sfx.click(); setDifficulty(d); }}
+              whileHover={{ scale: 1.1, y: -2 }}
+              whileTap={{ scale: 0.9 }}
               className={`px-3 py-1 rounded-md text-xs uppercase font-display tracking-widest border transition ${
                 difficulty === d ? "border-[var(--cyan)] text-[var(--cyan)] bg-[var(--cyan)]/10" : "border-border text-muted-foreground"
               }`}
-            >{d}</button>
+            >{d}</motion.button>
           ))}
         </div>
         <PlacementBoard onConfirm={startMatch} />
@@ -167,18 +195,8 @@ export function GameScreen({ onBack }: { onBack?: () => void }) {
   }
 
   return (
-    <div className="h-[calc(100vh-80px)] p-4 grid grid-rows-[auto_1fr] gap-4">
-      <div className="glass px-4 py-3 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-4">
-          <span className="font-display uppercase tracking-widest text-sm">
-            Turn: <span className={turn === "player" ? "neon-cyan" : "neon-enemy"}>{turn === "player" ? "Player" : "Enemy"}</span>
-          </span>
-          <span className="text-xs text-muted-foreground">Difficulty: <span className="text-foreground uppercase">{difficulty}</span></span>
-          <span className="text-xs text-muted-foreground">Shots: {shotsFired}</span>
-        </div>
-        <button className="btn-danger" onClick={() => { sfx.click(); setPhase("setup"); }}>Surrender</button>
-      </div>
-
+    <div className="h-[calc(100vh-80px)] p-4 grid grid-rows-[1fr_auto] gap-4">
+      {/* Main Game Area */}
       <div className="grid lg:grid-cols-[1fr_280px_1fr] gap-4 min-h-0">
         <section className="glass relative overflow-hidden min-h-[300px]">
           <div className="absolute top-3 left-3 z-10 font-display text-xs uppercase tracking-widest neon-cyan">Allied Fleet</div>
@@ -211,7 +229,45 @@ export function GameScreen({ onBack }: { onBack?: () => void }) {
         </section>
       </div>
 
+      {/* Floating Command Dock at Bottom */}
+      <motion.div 
+        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 glass px-8 py-4 flex items-center gap-6 rounded-2xl"
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+      >
+        <div className="flex items-center gap-4">
+          <motion.span 
+            className="font-display uppercase tracking-widest text-sm"
+            animate={{ color: turn === "player" ? "var(--cyan)" : "var(--enemy)" }}
+            transition={{ duration: 0.3 }}
+          >
+            Turn: {turn === "player" ? "Player" : "Enemy"}
+          </motion.span>
+          <span className="text-xs text-muted-foreground">Difficulty: <span className="text-foreground uppercase">{difficulty}</span></span>
+          <span className="text-xs text-muted-foreground">Shots: {shotsFired}</span>
+        </div>
+        <div className="h-8 w-px bg-border" />
+        <motion.button 
+          className="btn-danger !py-2 !px-6 !text-xs"
+          onClick={() => { sfx.click(); setPhase("setup"); }}
+          whileHover={{ scale: 1.05, rotate: [-2, 2, -2] }}
+          whileTap={{ scale: 0.95 }}
+        >
+          Surrender
+        </motion.button>
+      </motion.div>
+
       <SunkBanner shipName={sunk?.name ?? null} side={sunk?.side ?? "enemy"} />
+      <ScreenEffect type={screenEffect} />
+      <VictoryCinematic 
+        show={showCinematic === "victory"} 
+        onDismiss={() => setShowCinematic(null)} 
+      />
+      <DefeatCinematic 
+        show={showCinematic === "defeat"} 
+        onDismiss={() => setShowCinematic(null)} 
+      />
 
       <CyberModal
         open={!!modal && !boardsRevealed}
@@ -232,10 +288,29 @@ export function GameScreen({ onBack }: { onBack?: () => void }) {
       </CyberModal>
 
       {phase === "over" && boardsRevealed && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 glass px-6 py-3 flex items-center gap-4">
-          <button className="btn-cyber text-xs" onClick={() => { setModal(null); setPhase("setup"); }}>New Battle</button>
-          <a className="btn-danger text-xs" href="/stats">View Stats</a>
-        </div>
+        <motion.div 
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 glass px-6 py-3 flex items-center gap-4 rounded-xl"
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+        >
+          <motion.button 
+            className="btn-cyber text-xs" 
+            onClick={() => { setModal(null); setPhase("setup"); }}
+            whileHover={{ scale: 1.05, rotate: [0, -5, 5, -5, 0] }}
+            whileTap={{ scale: 0.95 }}
+          >
+            New Battle
+          </motion.button>
+          <motion.a 
+            className="btn-danger text-xs" 
+            href="/stats"
+            whileHover={{ scale: 1.05, x: [0, -3, 3, -3, 0] }}
+            whileTap={{ scale: 0.95 }}
+          >
+            View Stats
+          </motion.a>
+        </motion.div>
       )}
     </div>
   );
