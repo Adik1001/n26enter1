@@ -198,22 +198,22 @@ export function GameScreen({ onBack }: { onBack?: () => void }) {
     <div className="h-[calc(100vh-80px)] relative">
       {/* Top HUD Bar - slides in from top */}
       <motion.div
-        className="fixed top-20 left-0 right-0 z-40 h-16 glass flex items-center justify-between px-6"
+        className="fixed top-20 left-4 right-4 z-50 h-16 glass flex items-center justify-between px-6 min-w-0"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
       >
         {/* Left: Player Stats */}
-        <div className="flex items-center gap-6">
-          <div className="text-xs font-mono">
+        <div className="flex items-center gap-4 min-w-0">
+          <div className="text-xs font-mono whitespace-nowrap">
             <div className="text-[var(--cyan)]/70 mb-1">ALLIED FLEET</div>
             <div className="text-lg font-bold text-[var(--cyan)]">
               {player.ships.filter((s) => s.hits >= s.size).length}/5
               <span className="text-xs ml-1">SUNK</span>
             </div>
           </div>
-          <div className="h-8 w-px bg-[var(--cyan)]/30" />
-          <div className="text-xs font-mono">
+          <div className="h-8 w-px bg-[var(--cyan)]/30 flex-shrink-0" />
+          <div className="text-xs font-mono whitespace-nowrap">
             <div className="text-[var(--enemy)]/70 mb-1">ENEMY FLEET</div>
             <div className="text-lg font-bold text-[var(--enemy)]">
               {enemy.ships.filter((s) => s.hits >= s.size).length}/5
@@ -224,17 +224,17 @@ export function GameScreen({ onBack }: { onBack?: () => void }) {
 
         {/* Center: Turn Indicator */}
         <motion.div
-          className="text-center"
+          className="text-center px-4 border-2 border-transparent"
           animate={{
             borderColor: turn === "player" ? "var(--cyan)" : "var(--enemy)",
             boxShadow: turn === "player" 
-              ? "0 0 20px rgba(0, 255, 65, 0.3)" 
-              : "0 0 20px rgba(255, 0, 0, 0.3)"
+              ? "0 0 20px rgba(0, 255, 65, 0.3), inset 0 0 20px rgba(0, 255, 65, 0.1)" 
+              : "0 0 20px rgba(255, 0, 0, 0.3), inset 0 0 20px rgba(255, 0, 0, 0.1)"
           }}
           transition={{ duration: 0.3 }}
         >
-          <div className="text-xs font-mono text-white/50 mb-1">CURRENT TURN</div>
-          <div className="text-2xl font-bold font-mono">
+          <div className="text-xs font-mono text-white/50 mb-1 whitespace-nowrap">CURRENT TURN</div>
+          <div className="text-2xl font-bold font-mono whitespace-nowrap">
             {turn === "player" ? (
               <span className="text-[var(--cyan)]">PLAYER</span>
             ) : (
@@ -244,13 +244,13 @@ export function GameScreen({ onBack }: { onBack?: () => void }) {
         </motion.div>
 
         {/* Right: Game Stats */}
-        <div className="flex items-center gap-6">
-          <div className="text-xs font-mono text-right">
+        <div className="flex items-center gap-4 min-w-0">
+          <div className="text-xs font-mono text-right whitespace-nowrap">
             <div className="text-white/50 mb-1">SHOTS FIRED</div>
             <div className="text-lg font-bold">{shotsFired}</div>
           </div>
-          <div className="h-8 w-px bg-white/20" />
-          <div className="text-xs font-mono text-right">
+          <div className="h-8 w-px bg-white/20 flex-shrink-0" />
+          <div className="text-xs font-mono text-right whitespace-nowrap">
             <div className="text-white/50 mb-1">DIFFICULTY</div>
             <div className="text-lg font-bold uppercase">{difficulty}</div>
           </div>
@@ -258,68 +258,72 @@ export function GameScreen({ onBack }: { onBack?: () => void }) {
       </motion.div>
 
       {/* Main 3D View Area - Full width, no side panels */}
-      <div className="pt-20 pb-48 px-4 h-full flex items-center justify-center gap-4">
+      <div className="pt-24 pb-52 px-4 h-full flex items-center justify-center gap-4">
         {/* Player Board - Left */}
         <motion.section
-          className="w-[45%] h-[70vh] glass relative overflow-hidden"
+          className="w-[45%] h-[65vh] glass relative overflow-hidden min-w-0"
           initial={{ opacity: 0, x: -100 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.7, duration: 0.8, ease: "easeOut" }}
         >
-          <div className="absolute top-3 left-3 z-10 font-mono text-xs uppercase tracking-widest text-[var(--cyan)] bg-black/50 px-2 py-1">
+          <div className="absolute top-3 left-3 z-20 font-mono text-xs uppercase tracking-widest text-[var(--cyan)] bg-black/70 px-2 py-1 whitespace-nowrap">
             ALLIED FLEET
           </div>
-          <GameBoard3D board={player} isEnemy={false} revealShips />
+          <div className="w-full h-full">
+            <GameBoard3D board={player} isEnemy={false} revealShips />
+          </div>
         </motion.section>
 
         {/* Enemy Board - Right */}
         <motion.section
-          className="w-[45%] h-[70vh] glass relative overflow-hidden"
+          className="w-[45%] h-[65vh] glass relative overflow-hidden min-w-0"
           initial={{ opacity: 0, x: 100 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.7, duration: 0.8, ease: "easeOut" }}
         >
-          <div className="absolute top-3 left-3 z-10 font-mono text-xs uppercase tracking-widest text-[var(--enemy)] bg-black/50 px-2 py-1">
+          <div className="absolute top-3 left-3 z-20 font-mono text-xs uppercase tracking-widest text-[var(--enemy)] bg-black/70 px-2 py-1 whitespace-nowrap">
             ENEMY WATERS
           </div>
-          <div className="absolute top-3 right-3 z-10 font-mono text-[10px] uppercase tracking-widest text-white/50 bg-black/50 px-2 py-1">
+          <div className="absolute top-3 right-3 z-20 font-mono text-[10px] uppercase tracking-widest text-white/50 bg-black/70 px-2 py-1 whitespace-nowrap">
             RIGHT-CLICK TO MARK
           </div>
-          <GameBoard3D
-            board={enemy}
-            isEnemy
-            revealShips={phase === "over"}
-            onCellClick={(x, y) => playerFire(x, y)}
-            onCellRightClick={(x, y) => toggleEnemyMark(x, y)}
-          />
+          <div className="w-full h-full">
+            <GameBoard3D
+              board={enemy}
+              isEnemy
+              revealShips={phase === "over"}
+              onCellClick={(x, y) => playerFire(x, y)}
+              onCellRightClick={(x, y) => toggleEnemyMark(x, y)}
+            />
+          </div>
         </motion.section>
       </div>
 
       {/* Bottom HUD Dashboard - slides in from bottom */}
       <motion.div
-        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[90%] max-w-4xl glass flex gap-4 p-4"
+        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl glass flex gap-4 p-4 min-w-0"
         initial={{ y: 200 }}
         animate={{ y: 0 }}
         transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
       >
         {/* Comms Log */}
-        <div className="flex-1">
-          <div className="font-mono text-xs uppercase tracking-widest text-[var(--cyan)] mb-2">
+        <div className="flex-1 min-w-0">
+          <div className="font-mono text-xs uppercase tracking-widest text-[var(--cyan)] mb-2 whitespace-nowrap">
             COMMS LOG
           </div>
-          <ul className="text-xs space-y-1 font-mono h-24 overflow-y-auto">
+          <ul className="text-xs space-y-1 font-mono h-24 overflow-y-auto overflow-x-hidden">
             {log.map((l, i) => (
-              <li key={i} className="text-white/70" style={{ opacity: 1 - i * 0.1 }}>› {l}</li>
+              <li key={i} className="text-white/70 truncate" style={{ opacity: 1 - i * 0.1 }}>› {l}</li>
             ))}
           </ul>
         </div>
 
-        <div className="h-full w-px bg-white/20" />
+        <div className="h-full w-px bg-white/20 flex-shrink-0" />
 
         {/* Actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-shrink-0">
           <motion.button
-            className="btn-danger !py-3 !px-6 !text-xs"
+            className="btn-danger !py-3 !px-6 !text-xs whitespace-nowrap"
             onClick={() => { sfx.click(); setPhase("setup"); }}
             whileHover={{ scale: 1.05, rotate: [-2, 2, -2] }}
             whileTap={{ scale: 0.95 }}

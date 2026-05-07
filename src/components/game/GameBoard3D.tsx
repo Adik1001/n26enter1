@@ -25,6 +25,82 @@ function gridPos(x: number, y: number, boardSize: number): [number, number, numb
   return [x - OFFSET, 0, y - OFFSET];
 }
 
+function DestroyedShipEffect({ ship, color, boardSize }: { ship: PlacedShip; color: string; boardSize: number }) {
+  const cells = shipCells(ship);
+  const start = cells[0];
+  const end = cells[cells.length - 1];
+  const cx = (start.x + end.x) / 2;
+  const cy = (start.y + end.y) / 2;
+  const len = ship.size * CELL * 0.95;
+  const wid = CELL * 0.5;
+  const rotY = ship.orientation === "h" ? 0 : Math.PI / 2;
+  const particleCount = 30;
+  
+  const particles = useMemo(() => 
+    Array.from({ length: particleCount }, () => ({
+      position: [
+        (Math.random() - 0.5) * len * 0.8,
+        Math.random() * 0.5 + 0.3,
+        (Math.random() - 0.5) * CELL * 0.5
+      ] as [number, number, number],
+      velocity: [
+        (Math.random() - 0.5) * 0.02,
+        Math.random() * 0.03 + 0.01,
+        (Math.random() - 0.5) * 0.02
+      ] as [number, number, number],
+      size: Math.random() * 0.08 + 0.02
+    }))
+  , [len]);
+
+  const meshRef = useRef<THREE.Group>(null);
+  
+  useFrame((state: any) => {
+    if (meshRef.current) {
+      meshRef.current.children.forEach((child: any, i: number) => {
+        if (child.userData.velocity) {
+          child.position.x += child.userData.velocity[0];
+          child.position.y += child.userData.velocity[1];
+          child.position.z += child.userData.velocity[2];
+          child.userData.velocity[1] *= 0.98;
+          child.material.opacity = Math.max(0, 1 - state.clock.elapsedTime * 0.3);
+        }
+      });
+    }
+  });
+
+  return (
+    <group ref={meshRef} position={gridPos(cx, cy, boardSize)} rotation={[0, rotY, 0]}>
+      {/* Broken hull - tilted and fragmented */}
+      <mesh position={[0, 0.05, 0]} rotation={[0.2, 0, 0.1]}>
+        <boxGeometry args={[len * 0.7, 0.15, wid * 0.7]} />
+        <meshStandardMaterial color="#1a1515" metalness={0.3} roughness={0.9} />
+      </mesh>
+      <mesh position={[-len * 0.2, 0.03, 0.1]} rotation={[-0.3, 0.2, 0]}>
+        <boxGeometry args={[len * 0.25, 0.1, wid * 0.4]} />
+        <meshStandardMaterial color="#251a1a" metalness={0.2} roughness={0.95} />
+      </mesh>
+      <mesh position={[len * 0.15, 0.02, -0.05]} rotation={[0.4, -0.1, 0.2]}>
+        <boxGeometry args={[len * 0.2, 0.08, wid * 0.35]} />
+        <meshStandardMaterial color="#1f1515" metalness={0.25} roughness={0.9} />
+      </mesh>
+      
+      {/* Smoke/Spark particles */}
+      {particles.map((p, i) => (
+        <mesh key={i} position={p.position} userData={{ velocity: p.velocity }}>
+          <sphereGeometry args={[p.size, 4, 4]} />
+          <meshStandardMaterial 
+            color={Math.random() > 0.5 ? "#ff4400" : "#888888"} 
+            emissive={Math.random() > 0.5 ? "#ff2200" : "#444444"}
+            emissiveIntensity={0.5}
+            transparent
+            opacity={0.8}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 function ShipMesh({ ship, color, sunk, boardSize }: { ship: PlacedShip; color: string; sunk: boolean; boardSize: number }) {
   const cells = shipCells(ship);
   const start = cells[0];
@@ -35,60 +111,153 @@ function ShipMesh({ ship, color, sunk, boardSize }: { ship: PlacedShip; color: s
   const wid = CELL * 0.5;
   const rotY = ship.orientation === "h" ? 0 : Math.PI / 2;
 
-  const hullColor = sunk ? "#5a5858" : color;
-  const deckColor = "#0b1220";
-  const accentEmissive = sunk ? 0.22 : 0.75;
+  const hullColor = sunk ? "#3a3838" : color;
+  const deckColor = "#0a1520";
+  const accentEmissive = sunk ? 0.15 : 0.8;
   const turretCount = Math.max(1, ship.size - 2);
+
+  // Different ship types based on size
+  const isCarrier = ship.size >= 5;
+  const isBattleship = ship.size === 4;
+  const isSubmarine = ship.size === 3;
 
   return (
     <group position={gridPos(cx, cy, boardSize)} rotation={[0, rotY, 0]}>
-      <mesh position={[0, 0.12, 0]} castShadow>
-        <boxGeometry args={[len * 0.78, 0.18, wid]} />
-        <meshStandardMaterial color={hullColor} metalness={0.75} roughness={0.35} emissive={color} emissiveIntensity={accentEmissive * 0.55} toneMapped={false} />
+      {/* Main Hull - multiple segments for detail */}
+      <mesh position={[0, 0.15, 0]} castShadow>
+        <boxGeometry args={[len * 0.85, 0.25, wid * 0.9]} />
+        <meshStandardMaterial color={hullColor} metalness={0.8} roughness={0.3} emissive={color} emissiveIntensity={accentEmissive * 0.4} toneMapped={false} />
       </mesh>
-      <mesh position={[len * 0.39 + len * 0.06, 0.12, 0]} rotation={[0, 0, -Math.PI / 2]}>
-        <coneGeometry args={[wid / 2, len * 0.22, 4]} />
-        <meshStandardMaterial color={hullColor} metalness={0.75} roughness={0.35} />
+      
+      {/* Bow (front) - pointed shape */}
+      <mesh position={[len * 0.42 + len * 0.05, 0.15, 0]} rotation={[0, 0, -Math.PI / 2]}>
+        <coneGeometry args={[wid * 0.45, len * 0.25, 6]} />
+        <meshStandardMaterial color={hullColor} metalness={0.8} roughness={0.3} />
       </mesh>
-      <mesh position={[-len * 0.39 - len * 0.03, 0.12, 0]}>
-        <boxGeometry args={[len * 0.06, 0.18, wid * 0.85]} />
-        <meshStandardMaterial color={hullColor} metalness={0.75} roughness={0.35} />
+      
+      {/* Stern (back) - tapered */}
+      <mesh position={[-len * 0.42 - len * 0.02, 0.15, 0]}>
+        <boxGeometry args={[len * 0.08, 0.2, wid * 0.8]} />
+        <meshStandardMaterial color={hullColor} metalness={0.8} roughness={0.3} />
       </mesh>
-      <mesh position={[0, 0.22, 0]}>
-        <boxGeometry args={[len * 0.7, 0.02, wid * 0.85]} />
-        <meshStandardMaterial color={deckColor} metalness={0.5} roughness={0.6} />
+
+      {/* Main Deck */}
+      <mesh position={[0, 0.28, 0]}>
+        <boxGeometry args={[len * 0.75, 0.03, wid * 0.8]} />
+        <meshStandardMaterial color={deckColor} metalness={0.6} roughness={0.5} />
       </mesh>
-      <mesh position={[len * 0.05, 0.36, 0]}>
-        <boxGeometry args={[len * 0.18, 0.22, wid * 0.55]} />
-        <meshStandardMaterial color={deckColor} metalness={0.6} roughness={0.4} emissive={color} emissiveIntensity={accentEmissive} toneMapped={false} />
+
+      {/* Bridge/Command Tower */}
+      <mesh position={[-len * 0.15, 0.35, 0]}>
+        <boxGeometry args={[len * 0.2, 0.15, wid * 0.4]} />
+        <meshStandardMaterial color={deckColor} metalness={0.7} roughness={0.4} emissive={color} emissiveIntensity={accentEmissive * 0.6} toneMapped={false} />
       </mesh>
-      <mesh position={[len * 0.05, 0.5, 0]}>
-        <boxGeometry args={[len * 0.08, 0.1, wid * 0.35]} />
-        <meshStandardMaterial color={deckColor} metalness={0.6} roughness={0.4} />
+      
+      {/* Bridge Top */}
+      <mesh position={[-len * 0.15, 0.45, 0]}>
+        <boxGeometry args={[len * 0.12, 0.08, wid * 0.3]} />
+        <meshStandardMaterial color={deckColor} metalness={0.7} roughness={0.4} />
       </mesh>
-      <mesh position={[len * 0.05, 0.72, 0]}>
-        <cylinderGeometry args={[0.02, 0.02, 0.32, 6]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={accentEmissive * 1.5} toneMapped={false} />
-      </mesh>
-      {Array.from({ length: turretCount }).map((_, i) => {
-        const t = (i + 0.5) / turretCount;
-        const px = -len * 0.3 + t * (len * 0.25);
-        return (
-          <group key={`t${i}`} position={[px, 0.28, 0]}>
-            <mesh>
-              <cylinderGeometry args={[wid * 0.18, wid * 0.2, 0.1, 12]} />
-              <meshStandardMaterial color={deckColor} metalness={0.7} roughness={0.4} />
+
+      {/* Radar/Antenna on bridge */}
+      {!sunk && (
+        <mesh position={[-len * 0.15, 0.55, 0]}>
+          <cylinderGeometry args={[0.015, 0.015, 0.2, 6]} />
+          <meshStandardMaterial color={color} emissive={color} emissiveIntensity={accentEmissive * 2} toneMapped={false} />
+        </mesh>
+      )}
+
+      {/* Carrier-specific: Flight Deck */}
+      {isCarrier && (
+        <>
+          <mesh position={[len * 0.1, 0.31, 0]}>
+            <boxGeometry args={[len * 0.4, 0.02, wid * 0.75]} />
+            <meshStandardMaterial color="#1a2535" metalness={0.5} roughness={0.6} />
+          </mesh>
+          {/* Aircraft markings */}
+          {!sunk && Array.from({ length: 3 }).map((_, i) => (
+            <mesh key={i} position={[len * 0.05 + i * 0.3, 0.33, 0]}>
+              <boxGeometry args={[0.08, 0.01, 0.15]} />
+              <meshStandardMaterial color={color} emissive={color} emissiveIntensity={accentEmissive} toneMapped={false} />
             </mesh>
-            <mesh position={[wid * 0.25, 0.04, 0]} rotation={[0, 0, Math.PI / 2]}>
-              <cylinderGeometry args={[0.025, 0.025, wid * 0.5, 6]} />
-              <meshStandardMaterial color={hullColor} metalness={0.8} roughness={0.3} />
+          ))}
+        </>
+      )}
+
+      {/* Battleship-specific: Main Gun Turrets */}
+      {isBattleship && (
+        Array.from({ length: 3 }).map((_, i) => {
+          const t = (i + 0.5) / 3;
+          const px = -len * 0.25 + t * (len * 0.5);
+          return (
+            <group key={`t${i}`} position={[px, 0.32, 0]}>
+              <mesh>
+                <cylinderGeometry args={[wid * 0.2, wid * 0.22, 0.12, 8]} />
+                <meshStandardMaterial color={deckColor} metalness={0.8} roughness={0.3} />
+              </mesh>
+              {!sunk && (
+                <>
+                  <mesh position={[wid * 0.3, 0.04, 0]} rotation={[0, 0, Math.PI / 2]}>
+                    <cylinderGeometry args={[0.03, 0.03, wid * 0.6, 6]} />
+                    <meshStandardMaterial color={hullColor} metalness={0.9} roughness={0.2} />
+                  </mesh>
+                  <mesh position={[wid * 0.35, 0.06, 0]}>
+                    <cylinderGeometry args={[0.025, 0.025, wid * 0.5, 6]} />
+                    <meshStandardMaterial color={hullColor} metalness={0.9} roughness={0.2} />
+                  </mesh>
+                </>
+              )}
+            </group>
+          );
+        })
+      )}
+
+      {/* Submarine-specific: Conning Tower */}
+      {isSubmarine && (
+        <>
+          <mesh position={[len * 0.1, 0.4, 0]}>
+            <boxGeometry args={[len * 0.15, 0.18, wid * 0.3]} />
+            <meshStandardMaterial color={deckColor} metalness={0.7} roughness={0.4} />
+          </mesh>
+          <mesh position={[len * 0.1, 0.52, 0]}>
+            <boxGeometry args={[len * 0.08, 0.08, wid * 0.2]} />
+            <meshStandardMaterial color={deckColor} metalness={0.7} roughness={0.4} />
+          </mesh>
+          {!sunk && (
+            <mesh position={[len * 0.1, 0.58, 0]}>
+              <cylinderGeometry args={[0.01, 0.01, 0.15, 6]} />
+              <meshStandardMaterial color={color} emissive={color} emissiveIntensity={accentEmissive * 2} toneMapped={false} />
             </mesh>
-          </group>
-        );
-      })}
+          )}
+        </>
+      )}
+
+      {/* Generic turrets for smaller ships */}
+      {!isCarrier && !isBattleship && !isSubmarine && (
+        Array.from({ length: turretCount }).map((_, i) => {
+          const t = (i + 0.5) / turretCount;
+          const px = -len * 0.25 + t * (len * 0.5);
+          return (
+            <group key={`t${i}`} position={[px, 0.3, 0]}>
+              <mesh>
+                <cylinderGeometry args={[wid * 0.15, wid * 0.17, 0.08, 8]} />
+                <meshStandardMaterial color={deckColor} metalness={0.7} roughness={0.4} />
+              </mesh>
+              {!sunk && (
+                <mesh position={[wid * 0.2, 0.03, 0]} rotation={[0, 0, Math.PI / 2]}>
+                  <cylinderGeometry args={[0.02, 0.02, wid * 0.4, 6]} />
+                  <meshStandardMaterial color={hullColor} metalness={0.8} roughness={0.3} />
+                </mesh>
+              )}
+            </group>
+          );
+        })
+      )}
+
+      {/* Underwater shadow/outline */}
       <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[len * 0.95, wid * 1.15]} />
-        <meshBasicMaterial color={color} transparent opacity={sunk ? 0.12 : 0.18} />
+        <planeGeometry args={[len * 0.95, wid * 1.2]} />
+        <meshBasicMaterial color={color} transparent opacity={sunk ? 0.08 : 0.15} />
       </mesh>
     </group>
   );
@@ -96,9 +265,9 @@ function ShipMesh({ ship, color, sunk, boardSize }: { ship: PlacedShip; color: s
 
 function HitMarker({ x, y, type, boardSize }: { x: number; y: number; type: "hit" | "miss"; boardSize: number }) {
   const ref = useRef<THREE.Mesh>(null);
-  useFrame((s) => {
+  useFrame((state: any) => {
     if (ref.current && type === "hit") {
-      ref.current.scale.setScalar(1 + Math.sin(s.clock.elapsedTime * 3) * 0.08);
+      ref.current.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 3) * 0.08);
     }
   });
   if (type === "miss") {
@@ -183,6 +352,78 @@ function CellTile({
         </group>
       )}
     </group>
+  );
+}
+
+function WaterSurface({ boardSize, isEnemy }: { boardSize: number; isEnemy: boolean }) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const uniforms = useRef({
+    uTime: { value: 0 },
+    uColor: { value: new THREE.Color(isEnemy ? "#0a1520" : "#051020") },
+    uWaveHeight: { value: 0.08 },
+    uWaveSpeed: { value: 0.5 },
+  });
+
+  useFrame((state: any) => {
+    if (meshRef.current) {
+      uniforms.current.uTime.value = state.clock.elapsedTime;
+    }
+  });
+
+  const vertexShader = `
+    varying vec2 vUv;
+    varying float vElevation;
+    uniform float uTime;
+    uniform float uWaveHeight;
+    uniform float uWaveSpeed;
+
+    void main() {
+      vUv = uv;
+      vec3 pos = position;
+      
+      // Create wave pattern
+      float wave1 = sin(pos.x * 2.0 + uTime * uWaveSpeed) * uWaveHeight;
+      float wave2 = sin(pos.z * 3.0 + uTime * uWaveSpeed * 1.3) * uWaveHeight * 0.7;
+      float wave3 = cos(pos.x * 1.5 + pos.z * 1.5 + uTime * uWaveSpeed * 0.8) * uWaveHeight * 0.5;
+      
+      pos.y += wave1 + wave2 + wave3;
+      vElevation = pos.y;
+      
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+    }
+  `;
+
+  const fragmentShader = `
+    varying vec2 vUv;
+    varying float vElevation;
+    uniform vec3 uColor;
+
+    void main() {
+      // Create depth variation based on elevation
+      float depthFactor = smoothstep(-0.15, 0.15, vElevation);
+      vec3 deepColor = uColor * 0.6;
+      vec3 shallowColor = uColor * 1.2;
+      vec3 finalColor = mix(deepColor, shallowColor, depthFactor);
+      
+      // Add subtle shimmer
+      float shimmer = sin(vUv.x * 50.0 + vElevation * 20.0) * 0.05;
+      finalColor += shimmer;
+      
+      gl_FragColor = vec4(finalColor, 0.95);
+    }
+  `;
+
+  return (
+    <mesh ref={meshRef} position={[0, -0.08, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <planeGeometry args={[boardSize + 2, boardSize + 2, 128, 128]} />
+      <shaderMaterial
+        vertexShader={vertexShader}
+        fragmentShader={fragmentShader}
+        uniforms={uniforms.current}
+        transparent
+        side={THREE.DoubleSide}
+      />
+    </mesh>
   );
 }
 
@@ -310,18 +551,26 @@ function Scene({ board, isEnemy, revealShips, onCellClick, onCellRightClick, onC
       <pointLight position={[0, 4, 0]} intensity={1.2} color={isEnemy ? "#ff3b30" : "#3ad8ff"} />
 
       <group>
-        <mesh position={[0, -0.05, 0]} receiveShadow>
-          <boxGeometry args={[boardSize + 0.4, 0.1, boardSize + 0.4]} />
-          <meshStandardMaterial color={isLight ? "#cfd8e3" : "#070c14"} metalness={0.5} roughness={0.5} />
+        <WaterSurface boardSize={boardSize} isEnemy={isEnemy} />
+        <mesh position={[0, -0.1, 0]} receiveShadow>
+          <boxGeometry args={[boardSize + 0.4, 0.05, boardSize + 0.4]} />
+          <meshStandardMaterial color={isLight ? "#cfd8e3" : "#020406"} metalness={0.3} roughness={0.8} transparent opacity={0.8} />
         </mesh>
         <GridLines boardSize={boardSize} />
         <AxisLabels boardSize={boardSize} />
         {cells}
-        {board.ships.map((s) =>
-          (revealShips || s.hits >= s.size) ? (
-            <ShipMesh key={s.id} ship={s} color={shipColor} sunk={s.hits >= s.size} boardSize={boardSize} />
-          ) : null
-        )}
+        {board.ships.map((s) => {
+          const isSunk = s.hits >= s.size;
+          if (revealShips || isSunk) {
+            return (
+              <group key={s.id}>
+                <ShipMesh ship={s} color={shipColor} sunk={isSunk} boardSize={boardSize} />
+                {isSunk && <DestroyedShipEffect ship={s} color={shipColor} boardSize={boardSize} />}
+              </group>
+            );
+          }
+          return null;
+        })}
         {Object.entries(board.shots).map(([k, v]) => {
           if (v === "hit" && sunkCells.has(k)) return null;
           const [x, y] = k.split(",").map(Number);
